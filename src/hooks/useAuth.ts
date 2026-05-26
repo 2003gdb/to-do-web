@@ -11,12 +11,28 @@ export function useAuthHydrator() {
   const setHydrated = useAuthStore((s) => s.setHydrated);
 
   useEffect(() => {
-    const unsub = subscribeAuth((user, token) => {
-      setUser(user);
-      setToken(token);
+    const cached = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (cached) setToken(cached);
+    // No cached token = no session to wait for; hydrate now.
+    if (!cached) setHydrated(true);
+
+    let unsub: (() => void) | undefined;
+    try {
+      unsub = subscribeAuth((user, token) => {
+        setUser(user);
+        setToken(token);
+        setHydrated(true);
+      });
+    } catch (err) {
+      console.error("[auth] firebase init failed:", err);
       setHydrated(true);
-    });
-    return () => unsub();
+    }
+    // Safety: never block UI more than 2s.
+    const fallback = setTimeout(() => setHydrated(true), 2000);
+    return () => {
+      clearTimeout(fallback);
+      unsub?.();
+    };
   }, [setUser, setToken, setHydrated]);
 }
 

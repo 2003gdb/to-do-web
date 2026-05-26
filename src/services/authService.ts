@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { getFirebaseAuth } from "./firebase";
 import api from "./apiClient";
+import { useAuthStore } from "@/store/useAuthStore";
 import type { RegisterUserDto } from "@/types/todo";
 
 export async function login(email: string, password: string) {
@@ -14,6 +15,10 @@ export async function login(email: string, password: string) {
   const cred = await signInWithEmailAndPassword(auth, email, password);
   const token = await cred.user.getIdToken();
   localStorage.setItem("token", token);
+  const store = useAuthStore.getState();
+  store.setUser(cred.user);
+  store.setToken(token);
+  store.setHydrated(true);
   return { user: cred.user, token };
 }
 
@@ -26,6 +31,7 @@ export async function logout() {
   const auth = getFirebaseAuth();
   await signOut(auth);
   localStorage.removeItem("token");
+  useAuthStore.getState().reset();
 }
 
 export function subscribeAuth(cb: (user: User | null, token: string | null) => void) {
