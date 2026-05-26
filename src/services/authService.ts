@@ -1,0 +1,63 @@
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  type User,
+} from "firebase/auth";
+import { getFirebaseAuth } from "./firebase";
+import api from "./apiClient";
+import type { RegisterUserDto } from "@/types/todo";
+
+export async function login(email: string, password: string) {
+  const auth = getFirebaseAuth();
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  const token = await cred.user.getIdToken();
+  localStorage.setItem("token", token);
+  return { user: cred.user, token };
+}
+
+export async function register(dto: RegisterUserDto) {
+  await api.post("/users", dto);
+  return login(dto.email, dto.password);
+}
+
+export async function logout() {
+  const auth = getFirebaseAuth();
+  await signOut(auth);
+  localStorage.removeItem("token");
+}
+
+export function subscribeAuth(cb: (user: User | null, token: string | null) => void) {
+  const auth = getFirebaseAuth();
+  return onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const token = await user.getIdToken();
+      localStorage.setItem("token", token);
+      cb(user, token);
+    } else {
+      localStorage.removeItem("token");
+      cb(null, null);
+    }
+  });
+}
+
+export function mapAuthError(err: unknown): string {
+  const code = (err as { code?: string })?.code ?? "";
+  switch (code) {
+    case "auth/invalid-email":
+      return "Invalid email address.";
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return "Wrong email or password.";
+    case "auth/email-already-in-use":
+      return "Email is already registered.";
+    case "auth/weak-password":
+      return "Password must be at least 6 characters.";
+    case "auth/network-request-failed":
+      return "Network error. Check your connection.";
+    default:
+      return (err as Error)?.message ?? "Something went wrong.";
+  }
+}

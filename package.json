@@ -5,19 +5,43 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.14",
+    "axios": "^1.16.1",
+    "clsx": "^2.1.1",
+    "firebase": "^12.13.0",
+    "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@storybook/nextjs-vite": "^9.1.20",
+    "@storybook/react": "^9.1.20",
+    "@swc/jest": "^0.2.39",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^15.15.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "storybook": "^9.1.20",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
