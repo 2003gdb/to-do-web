@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { getFirebaseAuth } from "./firebase";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -10,10 +11,20 @@ export const api = axios.create({
 const AUTH_ROUTES = ["/login", "/register"];
 
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     config.headers.Accept = "application/json";
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+      let token: string | null = null;
+      try {
+        const user = getFirebaseAuth().currentUser;
+        if (user) {
+          token = await user.getIdToken();
+          localStorage.setItem("token", token);
+        }
+      } catch {
+        // Firebase unavailable: fall through to cached token.
+      }
+      if (!token) token = localStorage.getItem("token");
       if (token) config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

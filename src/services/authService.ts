@@ -2,7 +2,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
+  onIdTokenChanged,
   type User,
 } from "firebase/auth";
 import { getFirebaseAuth } from "./firebase";
@@ -42,7 +42,7 @@ export async function logout() {
 
 export function subscribeAuth(cb: (user: User | null, token: string | null) => void) {
   const auth = getFirebaseAuth();
-  return onAuthStateChanged(auth, async (user) => {
+  return onIdTokenChanged(auth, async (user) => {
     if (user) {
       const token = await user.getIdToken();
       localStorage.setItem("token", token);
