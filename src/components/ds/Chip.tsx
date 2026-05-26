@@ -33,11 +33,11 @@ export function Chip({
       type={type}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors outline-none",
+        "inline-flex items-center justify-center gap-2 rounded-sm font-medium transition-colors outline-none focus-visible:shadow-[var(--shadow-focus)]",
         sizeContainer[size],
         selected
-          ? "bg-black text-white shadow-md"
-          : "bg-white text-neutral-900 shadow-sm hover:bg-neutral-50",
+          ? "bg-accent text-accent-contrast"
+          : "bg-surface-elevated text-text-primary border border-border-subtle hover:bg-surface-sunken",
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}
@@ -47,7 +47,7 @@ export function Chip({
         <span
           className={cn(
             "w-2 h-2 rounded-full",
-            selected ? "bg-white" : "bg-pink-400"
+            selected ? "bg-accent-contrast" : "bg-text-muted"
           )}
         />
       ) : null}

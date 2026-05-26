@@ -9,37 +9,37 @@ type Props = {
 };
 
 const containerByTone: Record<Tone, string> = {
-  default: "bg-white shadow-sm",
-  success: "bg-green-100",
-  warning: "bg-amber-100",
-  danger: "bg-red-100",
-  accent: "bg-indigo-100",
-  dark: "bg-black/10",
+  default: "bg-surface-elevated border border-border-subtle",
+  success: "bg-success-muted",
+  warning: "bg-warning-muted",
+  danger: "bg-danger-muted",
+  accent: "bg-accent-muted",
+  dark: "bg-text-primary/10",
 };
 
 const dotByTone: Record<Tone, string> = {
-  default: "bg-pink-400",
-  success: "bg-green-500",
-  warning: "bg-amber-500",
-  danger: "bg-red-500",
-  accent: "bg-indigo-500",
-  dark: "bg-black",
+  default: "bg-text-muted",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-danger",
+  accent: "bg-accent",
+  dark: "bg-text-primary",
 };
 
 const textByTone: Record<Tone, string> = {
-  default: "text-neutral-900",
-  success: "text-neutral-900",
-  warning: "text-neutral-900",
-  danger: "text-neutral-900",
-  accent: "text-neutral-900",
-  dark: "text-neutral-900",
+  default: "text-text-primary",
+  success: "text-text-primary",
+  warning: "text-text-primary",
+  danger: "text-text-primary",
+  accent: "text-text-primary",
+  dark: "text-text-primary",
 };
 
 export function Pill({ label, tone = "default", dot }: Props) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold",
+        "inline-flex items-center gap-2 px-3 py-1 rounded-xs text-xs font-medium",
         containerByTone[tone],
         textByTone[tone]
       )}

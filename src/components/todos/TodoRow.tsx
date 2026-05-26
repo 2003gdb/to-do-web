@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { IconTile } from "@/components/ds/IconTile";
+import { Check } from "lucide-react";
+import { cn } from "@/utils/cn";
 import type { Priority, Todo } from "@/types/todo";
 
-const priorityTone: Record<Priority, { bg: string; label: string }> = {
-  LOW: { bg: "bg-neutral-100", label: "L" },
-  MEDIUM: { bg: "bg-amber-100", label: "M" },
-  HIGH: { bg: "bg-red-100", label: "H" },
+const priorityDot: Record<Priority, string> = {
+  LOW: "bg-border",
+  MEDIUM: "bg-text-muted",
+  HIGH: "bg-warning",
 };
 
 function formatDate(iso?: string) {
@@ -25,34 +26,48 @@ function formatDate(iso?: string) {
 }
 
 export function TodoRow({ todo }: { todo: Todo }) {
-  const tone = todo.priority ? priorityTone[todo.priority] : null;
   return (
     <Link
       href={`/todos/${todo.id}`}
-      className="flex items-center gap-3 bg-white px-4 py-4 transition-colors hover:bg-neutral-50"
+      className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-surface-sunken outline-none focus-visible:bg-surface-sunken focus-visible:shadow-[var(--shadow-focus)]"
     >
-      <IconTile
-        symbol={todo.completed ? "✓" : tone?.label ?? "•"}
-        bg={todo.completed ? "bg-green-100" : tone?.bg ?? "bg-neutral-100"}
-      />
+      <div
+        className={cn(
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-sm",
+          todo.completed
+            ? "bg-accent text-surface-sunken"
+            : "bg-gold-muted text-accent"
+        )}
+        aria-hidden
+      >
+        {todo.completed ? (
+          <Check size={18} strokeWidth={2.5} />
+        ) : todo.priority ? (
+          <span
+            className={cn("h-2 w-2 rounded-full", priorityDot[todo.priority])}
+          />
+        ) : (
+          <span className="h-2 w-2 rounded-full bg-accent" />
+        )}
+      </div>
+
       <div className="min-w-0 flex-1">
         <p
-          className={`truncate text-base font-semibold ${
-            todo.completed ? "text-neutral-400 line-through" : "text-neutral-900"
-          }`}
+          className={cn(
+            "truncate text-base font-medium",
+            todo.completed ? "text-text-muted line-through" : "text-text-primary"
+          )}
         >
           {todo.title}
         </p>
-        <p className="mt-0.5 truncate text-xs text-neutral-500">
-          {todo.description || formatDate(todo.createdAt)}
-        </p>
+        {todo.description ? (
+          <p className="mt-0.5 truncate text-xs text-text-muted">{todo.description}</p>
+        ) : null}
       </div>
-      <div className="flex flex-col items-end">
-        <span className="text-sm font-semibold text-neutral-900">
-          {todo.completed ? "Done" : "Pending"}
-        </span>
-        <span className="mt-0.5 text-xs text-neutral-500">{formatDate(todo.createdAt)}</span>
-      </div>
+
+      <span className="shrink-0 text-xs tabular-nums text-text-muted">
+        {formatDate(todo.createdAt)}
+      </span>
     </Link>
   );
 }

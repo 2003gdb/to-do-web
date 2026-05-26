@@ -18,10 +18,10 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const containerByVariant: Record<Variant, string> = {
-  primary: "bg-black text-white hover:bg-neutral-800",
-  secondary: "bg-indigo-100 text-neutral-900 hover:bg-indigo-200",
-  ghost: "bg-transparent border border-neutral-300 text-neutral-900 hover:bg-neutral-100",
-  danger: "bg-red-500 text-white hover:bg-red-600",
+  primary: "bg-accent text-accent-contrast hover:bg-accent-hover font-semibold",
+  secondary: "bg-accent-muted text-text-primary hover:bg-accent-muted/80 font-medium",
+  ghost: "bg-transparent border border-border text-text-primary hover:bg-surface-sunken font-medium",
+  danger: "bg-danger text-accent-contrast hover:bg-danger/90 font-semibold",
 };
 
 const sizeContainer: Record<Size, string> = {
@@ -53,7 +53,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
       type={type}
       disabled={isDisabled}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-colors outline-none",
+        "inline-flex items-center justify-center gap-2 rounded-sm transition-colors outline-none focus-visible:shadow-[var(--shadow-focus)]",
         sizeContainer[size],
         containerByVariant[variant],
         fullWidth && "w-full",

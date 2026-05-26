@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ds/Button";
-import { Card } from "@/components/ds/Card";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useAuthStore } from "@/store/useAuthStore";
 import { logout } from "@/services/authService";
@@ -19,27 +18,24 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="flex flex-col gap-5 pb-8">
+    <div className="pb-12">
       <PageHeader title="My account" />
 
-      <div className="flex flex-col gap-4 px-5">
-        <Card>
-          <p className="mb-1 text-xs font-semibold text-neutral-500">SIGNED IN</p>
-          <p className="text-base text-neutral-900">{user?.email ?? "—"}</p>
+      <div className="px-4 md:px-6">
+        <dl className="mb-10 flex flex-col gap-5 border-b border-border-subtle pb-10 md:mb-12 md:pb-12">
+          <div className="flex flex-col gap-1">
+            <dt className="text-sm font-medium text-text-secondary">Signed in</dt>
+            <dd className="text-base text-text-primary">{user?.email ?? "Not set"}</dd>
+          </div>
           {user?.displayName ? (
-            <p className="text-sm text-neutral-500">{user.displayName}</p>
+            <div className="flex flex-col gap-1">
+              <dt className="text-sm font-medium text-text-secondary">Name</dt>
+              <dd className="text-base text-text-primary">{user.displayName}</dd>
+            </div>
           ) : null}
-        </Card>
+        </dl>
 
-        <Card>
-          <p className="mb-1 text-xs font-semibold text-neutral-500">ABOUT</p>
-          <p className="text-sm text-neutral-700">
-            To-Do is a simple task manager. Organize tasks into lists, set priorities and due
-            dates, and discuss them with comments.
-          </p>
-        </Card>
-
-        <Button label="Log out" onClick={handleLogout} />
+        <Button label="Log out" variant="ghost" onClick={handleLogout} />
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ds/Button";
-import { Card } from "@/components/ds/Card";
 import { Input } from "@/components/ds/Input";
 import { register, mapAuthError } from "@/services/authService";
 import { errorMessage } from "@/utils/errorMessage";
@@ -37,43 +36,59 @@ export default function RegisterPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div>
-        <h1 className="mb-1 text-4xl font-bold text-neutral-900">Create account</h1>
-        <p className="text-neutral-500">Sign up to get started</p>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-semibold tracking-tight text-text-primary">Create account</h1>
+        <p className="text-sm text-text-secondary">Sign up to get started</p>
       </div>
 
-      <Card>
-        <label className="mb-1 block text-xs font-semibold text-neutral-500">NAME</label>
-        <Input
-          placeholder="Your full name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          autoComplete="name"
-          autoFocus
-        />
-        <div className="my-4 h-px bg-neutral-100" />
-        <label className="mb-1 block text-xs font-semibold text-neutral-500">EMAIL</label>
-        <Input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-        />
-        <div className="my-4 h-px bg-neutral-100" />
-        <label className="mb-1 block text-xs font-semibold text-neutral-500">PASSWORD</label>
-        <Input
-          type="password"
-          placeholder="8+ chars, upper, lower, digit"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="new-password"
-        />
-      </Card>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="name" className="text-sm text-text-secondary">
+            Name
+          </label>
+          <Input
+            id="name"
+            placeholder="Your full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            autoComplete="name"
+            autoFocus
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="email" className="text-sm text-text-secondary">
+            Email
+          </label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="password" className="text-sm text-text-secondary">
+            Password
+          </label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="8+ chars, upper, lower, digit"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+          />
+        </div>
+      </div>
 
       {error ? (
-        <p role="alert" className="rounded-2xl bg-red-100 px-4 py-3 text-sm font-medium text-red-700">
+        <p
+          role="alert"
+          className="rounded-sm bg-danger-muted px-4 py-3 text-sm font-medium text-danger"
+        >
           {error}
         </p>
       ) : null}
@@ -86,9 +101,12 @@ export default function RegisterPage() {
         fullWidth
       />
 
-      <p className="text-center text-sm text-neutral-500">
+      <p className="text-center text-sm text-text-secondary">
         Have an account?{" "}
-        <Link href="/login" className="font-semibold text-neutral-900">
+        <Link
+          href="/login"
+          className="rounded-xs font-medium text-text-primary underline-offset-4 hover:underline outline-none focus-visible:shadow-[var(--shadow-focus)]"
+        >
           Sign in
         </Link>
       </p>

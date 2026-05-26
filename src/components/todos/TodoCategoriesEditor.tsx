@@ -23,9 +23,9 @@ export function TodoCategoriesEditor({ todoId, attached }: Props) {
 
   return (
     <div>
-      <p className="mb-3 text-xs font-semibold text-neutral-500">LISTS</p>
+      <h2 className="mb-3 text-sm font-medium text-text-secondary">Lists</h2>
       {all.length === 0 ? (
-        <p className="text-sm text-neutral-500">No lists yet.</p>
+        <p className="text-sm text-text-muted">No lists yet.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {all.map((c) => (

@@ -12,8 +12,10 @@ export function Card({ padded = true, dark = false, className, children, ...rest
     <div
       {...rest}
       className={cn(
-        "rounded-3xl",
-        dark ? "bg-black text-white" : "bg-white",
+        "rounded-md border border-border-subtle",
+        dark
+          ? "bg-text-primary text-accent-contrast"
+          : "bg-surface-elevated text-text-primary",
         padded && "p-5",
         "shadow-[var(--shadow-soft-1)]",
         className

@@ -3,18 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ds/Button";
-import { Card } from "@/components/ds/Card";
 import { Input } from "@/components/ds/Input";
 import { Textarea } from "@/components/ds/Textarea";
 import { Chip } from "@/components/ds/Chip";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useCategories } from "@/hooks/queries/useCategories";
-import { useCreateTodo, useAttachCategory } from "@/hooks/mutations/useTodoMutations";
+import { useCreateTodo } from "@/hooks/mutations/useTodoMutations";
 import type { Priority } from "@/types/todo";
 import { errorMessage } from "@/utils/errorMessage";
 import { todosService } from "@/services/todos";
 
 const PRIORITIES: Priority[] = ["LOW", "MEDIUM", "HIGH"];
+const PRIORITY_LABEL: Record<Priority, string> = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  HIGH: "High",
+};
 
 export default function NewTodoPage() {
   const router = useRouter();
@@ -53,44 +57,65 @@ export default function NewTodoPage() {
     <div className="flex flex-col gap-4 pb-8">
       <PageHeader title="New todo" backHref="/home" />
 
-      <div className="flex flex-col gap-4 px-5">
-        <Card>
-          <label className="mb-1 block text-xs font-semibold text-neutral-500">TITLE</label>
-          <Input
-            placeholder="What needs doing?"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            autoFocus
-          />
-          <div className="my-4 h-px bg-neutral-100" />
-          <label className="mb-1 block text-xs font-semibold text-neutral-500">DESCRIPTION</label>
-          <Textarea
-            placeholder="Add details (optional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-          />
-        </Card>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreate();
+        }}
+        className="flex flex-col gap-6 px-5"
+      >
+        <section className="flex flex-col gap-4 border-b border-border-subtle pb-6">
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="todo-title"
+              className="text-sm font-medium text-text-secondary"
+            >
+              Title
+            </label>
+            <Input
+              id="todo-title"
+              placeholder="What needs doing?"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="todo-description"
+              className="text-sm font-medium text-text-secondary"
+            >
+              Description
+            </label>
+            <Textarea
+              id="todo-description"
+              placeholder="Add details (optional)"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+            />
+          </div>
+        </section>
 
-        <Card>
-          <p className="mb-3 text-xs font-semibold text-neutral-500">PRIORITY</p>
+        <section className="flex flex-col gap-3 border-b border-border-subtle pb-6">
+          <p className="text-sm font-medium text-text-secondary">Priority</p>
           <div className="flex gap-2">
             {PRIORITIES.map((p) => (
               <Chip
                 key={p}
-                label={p}
+                label={PRIORITY_LABEL[p]}
                 selected={priority === p}
                 onClick={() => setPriority(priority === p ? undefined : p)}
                 className="flex-1"
               />
             ))}
           </div>
-        </Card>
+        </section>
 
-        <Card>
-          <p className="mb-3 text-xs font-semibold text-neutral-500">LISTS</p>
+        <section className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-text-secondary">Lists</p>
           {categories.length === 0 ? (
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-text-muted">
               No lists yet. Create one in the Lists tab.
             </p>
           ) : (
@@ -105,29 +130,33 @@ export default function NewTodoPage() {
               ))}
             </div>
           )}
-        </Card>
+        </section>
 
         {error ? (
-          <p role="alert" className="rounded-2xl bg-red-100 px-4 py-3 text-sm font-medium text-red-700">
+          <p
+            role="alert"
+            className="rounded-sm bg-danger-muted px-4 py-3 text-sm font-medium text-danger"
+          >
             {error}
           </p>
         ) : null}
 
-        <Button
-          label="Create"
-          loading={createMut.isPending}
-          loadingLabel="Creating…"
-          onClick={handleCreate}
-          fullWidth
-        />
-        <Button
-          label="Cancel"
-          variant="ghost"
-          onClick={() => router.back()}
-          disabled={createMut.isPending}
-          fullWidth
-        />
-      </div>
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <Button
+            label="Cancel"
+            variant="ghost"
+            onClick={() => router.back()}
+            disabled={createMut.isPending}
+          />
+          <Button
+            label="Create"
+            loading={createMut.isPending}
+            loadingLabel="Creating…"
+            type="submit"
+            onClick={handleCreate}
+          />
+        </div>
+      </form>
     </div>
   );
 }

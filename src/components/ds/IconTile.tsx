@@ -6,11 +6,11 @@ type Props = {
   className?: string;
 };
 
-export function IconTile({ symbol = "•", bg = "bg-neutral-100", className }: Props) {
+export function IconTile({ symbol = "•", bg = "bg-surface-sunken", className }: Props) {
   return (
     <div
       className={cn(
-        "w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-semibold text-neutral-900",
+        "w-10 h-10 rounded-sm flex items-center justify-center text-base font-medium text-text-secondary",
         bg,
         className
       )}
