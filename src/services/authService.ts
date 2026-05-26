@@ -23,7 +23,13 @@ export async function login(email: string, password: string) {
 }
 
 export async function register(dto: RegisterUserDto) {
-  await api.post("/users", dto);
+  try {
+    await api.post("/users", dto);
+  } catch (err) {
+    const status = (err as { response?: { status?: number } })?.response?.status;
+    // Already exists in backend: proceed to login. Other backend errors propagate.
+    if (status !== 409) throw err;
+  }
   return login(dto.email, dto.password);
 }
 
