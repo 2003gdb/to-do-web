@@ -3,8 +3,7 @@ import "@testing-library/jest-dom";
 // firebase/auth in Node-mode imports a fetch reference at module init.
 // jsdom 30 doesn't expose `fetch` globally; provide a stub.
 if (typeof globalThis.fetch === "undefined") {
-  // @ts-expect-error test polyfill
-  globalThis.fetch = () => Promise.reject(new Error("fetch not implemented in tests"));
+  globalThis.fetch = (() => Promise.reject(new Error("fetch not implemented in tests"))) as typeof fetch;
 }
 
 // Fail tests on unexpected console.error / console.warn. Senior tests
