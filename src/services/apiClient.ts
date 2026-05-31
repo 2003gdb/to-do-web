@@ -1,7 +1,11 @@
 import axios, { AxiosError } from "axios";
+import { signOut } from "firebase/auth";
 import { getFirebaseAuth } from "./firebase";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+
+let signingOut = false;
 
 export const api = axios.create({
   baseURL,
@@ -38,11 +42,29 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const hasResponse = Boolean(error.response);
 
-    if (status === 401 && hasResponse && typeof window !== "undefined") {
+    if (status === 401 && hasResponse && typeof window !== "undefined" && !signingOut) {
+      signingOut = true;
       localStorage.removeItem("token");
+      useAuthStore.getState().reset();
       const path = window.location.pathname;
-      if (!AUTH_ROUTES.includes(path)) {
-        window.location.replace("/login");
+      const onAuthRoute = AUTH_ROUTES.includes(path);
+      const done = () => {
+        if (!onAuthRoute) {
+          window.location.replace("/login");
+        } else {
+          signingOut = false;
+        }
+      };
+      try {
+        const auth = getFirebaseAuth();
+        const result = auth ? signOut(auth) : undefined;
+        if (result && typeof (result as Promise<void>).then === "function") {
+          (result as Promise<void>).catch(() => {}).finally(done);
+        } else {
+          done();
+        }
+      } catch {
+        done();
       }
     }
     if (status && status >= 500) {
